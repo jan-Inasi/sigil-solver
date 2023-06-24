@@ -20,13 +20,13 @@ const SQUARE: [SigilCell; 4] = [((0, 0), '┏'), ((1, 0), '┓'), ((0, 1), '┗'
 const H_LINE: [SigilCell; 4] = [((0, 0), '╺'), ((1, 0), '━'), ((2, 0), '━'), ((3, 0), '╸')];
 const V_LINE: [SigilCell; 4] = [((0, 0), '╻'), ((0, 1), '┃'), ((0, 2), '┃'), ((0, 3), '╹')];
 
-const SH: [SigilCell; 4] = [((0, 0), '╺'), ((1, 0), '┛'), ((1, -1), '┏'), ((2, -1), '╸')];
+const SH: [SigilCell; 4] = [((-1, 1), '╺'), ((0, 1), '┛'), ((0, 0), '┏'), ((1, 0), '╸')];
 const SV: [SigilCell; 4] = [((0, 0), '╻'), ((0, 1), '┗'), ((1, 1), '┓'), ((1, 2), '╹')];
 
 const ZH: [SigilCell; 4] = [((0, 0), '╺'), ((1, 0), '┓'), ((1, 1), '┗'), ((2, 1), '╸')];
 const ZV: [SigilCell; 4] = [((0, 0), '╻'), ((0, 1), '┛'), ((-1, 1), '┏'), ((-1, 2), '╹')];
 
-const T_UP: [SigilCell; 4] = [((0, 0), '╺'), ((1, 0), '┻'), ((1, -1), '╻'), ((2, 0), '╸')];
+const T_UP: [SigilCell; 4] = [((-1, 1), '╺'), ((0, 1), '┻'), ((0, 0), '╻'), ((1, 1), '╸')];
 const T_RIGHT: [SigilCell; 4] = [((0, 0), '╻'), ((0, 1), '┣'), ((1, 1), '╸'), ((0, 2), '╹')];
 const T_DOWN: [SigilCell; 4] = [((0, 0), '╺'), ((1, 0), '┳'), ((1, 1), '╹'), ((2, 0), '╸')];
 const T_LEFT: [SigilCell; 4] = [((0, 0), '╻'), ((0, 1), '┫'), ((-1, 1), '╺'), ((0, 2), '╹')];
@@ -34,14 +34,14 @@ const T_LEFT: [SigilCell; 4] = [((0, 0), '╻'), ((0, 1), '┫'), ((-1, 1), '╺
 const L_UP: [SigilCell; 4] = [((0, 0), '╻'), ((0, 1), '┃'), ((0, 2), '┗'), ((1, 2), '╸')];
 const L_RIGHT: [SigilCell; 4] = [((0, 0), '┏'), ((0, 1), '╹'), ((1, 0), '━'), ((2, 0), '╸')];
 const L_DOWN: [SigilCell; 4] = [((0, 0), '╺'), ((1, 0), '┓'), ((1, 1), '┃'), ((1, 2), '╹')];
-const L_LEFT: [SigilCell; 4] = [((0, 0), '╺'), ((1, 0), '━'), ((2, 0), '┛'), ((2, -1), '╻')];
+const L_LEFT: [SigilCell; 4] = [((-2, 1), '╺'), ((-1, 1), '━'), ((0, 1), '┛'), ((0, 0), '╻')];
 
 const J_UP: [SigilCell; 4] = [((0, 0), '╻'), ((0, 1), '┃'), ((0, 2), '┛'), ((-1, 2), '╺')];
 const J_RIGHT: [SigilCell; 4] = [((0, 0), '╻'), ((0, 1), '┗'), ((1, 1), '━'), ((2, 1), '╸')];
 const J_DOWN: [SigilCell; 4] = [((0, 0), '┏'), ((1, 0), '╸'), ((0, 1), '┃'), ((0, 2), '╹')];
 const J_LEFT: [SigilCell; 4] = [((0, 0), '╺'), ((1, 0), '━'), ((2, 0), '┓'), ((2, 1), '╹')];
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub enum Line {
     Horizontal,
     Vertical,
@@ -56,7 +56,7 @@ impl Line {
     }
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub enum Direction {
     Up,
     Right,
@@ -75,7 +75,7 @@ impl Direction {
     }
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub enum Tetris {
     Square,
     Line(Line),
@@ -100,6 +100,7 @@ impl Tetris {
     }
 }
 
+#[derive(Debug)]
 pub struct Sigil {
     pos: (u8, u8),
     class: Tetris,

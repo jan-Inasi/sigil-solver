@@ -39,6 +39,8 @@ fn solve(board: &mut sigils::Board, blocks: &mut Vec<Tetris>) -> bool {
 fn solve_from_anchore(sigil: Sigil, board: &mut sigils::Board, blocks: &mut Vec<Tetris>) -> bool {
     let mut sigil = sigil;
     for _ in 0..sigil.n_states() {
+        // println!("{sigil:?}");
+        // println!("{board}");
         match board.add_sigil(sigil) {
             Ok(()) => {
                 if solve(board, blocks) {
@@ -58,12 +60,15 @@ fn solve_from_anchore(sigil: Sigil, board: &mut sigils::Board, blocks: &mut Vec<
 }
 
 fn main() {
-    let mut board = sigils::Board::new(8, 6);
-    let mut blocks = vec![Tetris::T(Direction::Up); 4];
-    blocks.push(Tetris::J(Direction::Down));
+    let mut board = sigils::Board::new(6, 6);
+    let mut blocks = Vec::new();
     blocks.extend([Tetris::Square; 1].into_iter());
-    blocks.extend([Tetris::Line(Line::Vertical); 2].into_iter());
+    blocks.extend([Tetris::Line(Line::Vertical); 0].into_iter());
+    blocks.extend([Tetris::S(Line::Horizontal); 4].into_iter());
+    blocks.extend([Tetris::Z(Line::Vertical); 0].into_iter());
     blocks.extend([Tetris::L(Direction::Down); 4].into_iter());
+    blocks.extend([Tetris::J(Direction::Down); 0].into_iter());
+    blocks.extend([Tetris::T(Direction::Down); 0].into_iter());
 
     println!("{}", solve(&mut board, &mut blocks));
 
