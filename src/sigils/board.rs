@@ -77,8 +77,8 @@ impl Direction {
 
 #[derive(Clone, Copy, Debug)]
 pub enum Tetris {
-    Square,
-    Line(Line),
+    O,
+    I(Line),
     S(Line),
     Z(Line),
     T(Direction),
@@ -87,10 +87,34 @@ pub enum Tetris {
 }
 
 impl Tetris {
+    pub fn o_default() -> Self {
+        Tetris::O
+    }
+
+    pub fn i_default() -> Self {
+        Tetris::I(Line::Horizontal)
+    }
+    pub fn s_default() -> Self {
+        Tetris::S(Line::Horizontal)
+    }
+
+    pub fn z_default() -> Self {
+        Tetris::Z(Line::Horizontal)
+    }
+    pub fn t_default() -> Self {
+        Tetris::T(Direction::Down)
+    }
+    pub fn l_default() -> Self {
+        Tetris::L(Direction::Down)
+    }
+    pub fn j_default() -> Self {
+        Tetris::J(Direction::Down)
+    }
+
     pub fn rotate(self) -> Self {
         match self {
-            Tetris::Square => self,
-            Tetris::Line(line) => Tetris::Line(line.rotate()),
+            Tetris::O => self,
+            Tetris::I(line) => Tetris::I(line.rotate()),
             Tetris::S(line) => Tetris::S(line.rotate()),
             Tetris::Z(line) => Tetris::Z(line.rotate()),
             Tetris::T(dir) => Tetris::T(dir.rotate()),
@@ -113,9 +137,9 @@ impl Sigil {
 
     fn shape(&self) -> &[SigilCell] {
         match self.class {
-            Tetris::Square => &SQUARE,
-            Tetris::Line(Line::Horizontal) => &H_LINE,
-            Tetris::Line(Line::Vertical) => &V_LINE,
+            Tetris::O => &SQUARE,
+            Tetris::I(Line::Horizontal) => &H_LINE,
+            Tetris::I(Line::Vertical) => &V_LINE,
             Tetris::S(Line::Horizontal) => &SH,
             Tetris::S(Line::Vertical) => &SV,
             Tetris::Z(Line::Horizontal) => &ZH,
@@ -144,8 +168,8 @@ impl Sigil {
 
     pub fn n_states(&self) -> i32 {
         match self.class {
-            Tetris::Square => 1,
-            Tetris::Line(_) => 2,
+            Tetris::O => 1,
+            Tetris::I(_) => 2,
             Tetris::S(_) => 2,
             Tetris::Z(_) => 2,
             Tetris::T(_) => 4,
