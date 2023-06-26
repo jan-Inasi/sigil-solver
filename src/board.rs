@@ -1,3 +1,4 @@
+use num_derive::FromPrimitive;
 use std::collections::HashMap;
 use std::fmt::Display;
 use std::vec::Vec;
@@ -75,8 +76,21 @@ impl Direction {
     }
 }
 
+pub const TETRIS_SHAPE_COUNT: usize = 7;
+
+#[derive(Clone, Copy, FromPrimitive)]
+pub enum TetrisShape {
+    O,
+    I,
+    S,
+    Z,
+    T,
+    L,
+    J,
+}
+
 #[derive(Clone, Copy, Debug)]
-pub enum Tetris {
+pub enum TetrisBlock {
     O,
     I(Line),
     S(Line),
@@ -86,40 +100,28 @@ pub enum Tetris {
     J(Direction),
 }
 
-impl Tetris {
-    pub fn o_default() -> Self {
-        Tetris::O
-    }
-
-    pub fn i_default() -> Self {
-        Tetris::I(Line::Horizontal)
-    }
-    pub fn s_default() -> Self {
-        Tetris::S(Line::Horizontal)
-    }
-
-    pub fn z_default() -> Self {
-        Tetris::Z(Line::Horizontal)
-    }
-    pub fn t_default() -> Self {
-        Tetris::T(Direction::Down)
-    }
-    pub fn l_default() -> Self {
-        Tetris::L(Direction::Down)
-    }
-    pub fn j_default() -> Self {
-        Tetris::J(Direction::Down)
+impl TetrisBlock {
+    pub fn default(shape: TetrisShape) -> Self {
+        match shape {
+            TetrisShape::O => TetrisBlock::O,
+            TetrisShape::I => TetrisBlock::I(Line::Horizontal),
+            TetrisShape::S => TetrisBlock::S(Line::Horizontal),
+            TetrisShape::Z => TetrisBlock::Z(Line::Horizontal),
+            TetrisShape::T => TetrisBlock::T(Direction::Down),
+            TetrisShape::L => TetrisBlock::L(Direction::Right),
+            TetrisShape::J => TetrisBlock::J(Direction::Up),
+        }
     }
 
     pub fn rotate(self) -> Self {
         match self {
-            Tetris::O => self,
-            Tetris::I(line) => Tetris::I(line.rotate()),
-            Tetris::S(line) => Tetris::S(line.rotate()),
-            Tetris::Z(line) => Tetris::Z(line.rotate()),
-            Tetris::T(dir) => Tetris::T(dir.rotate()),
-            Tetris::L(dir) => Tetris::L(dir.rotate()),
-            Tetris::J(dir) => Tetris::J(dir.rotate()),
+            TetrisBlock::O => self,
+            TetrisBlock::I(line) => TetrisBlock::I(line.rotate()),
+            TetrisBlock::S(line) => TetrisBlock::S(line.rotate()),
+            TetrisBlock::Z(line) => TetrisBlock::Z(line.rotate()),
+            TetrisBlock::T(dir) => TetrisBlock::T(dir.rotate()),
+            TetrisBlock::L(dir) => TetrisBlock::L(dir.rotate()),
+            TetrisBlock::J(dir) => TetrisBlock::J(dir.rotate()),
         }
     }
 }
@@ -127,35 +129,35 @@ impl Tetris {
 #[derive(Debug)]
 pub struct Sigil {
     pos: (u8, u8),
-    class: Tetris,
+    class: TetrisBlock,
 }
 
 impl Sigil {
-    pub fn new(pos: (u8, u8), tetris: Tetris) -> Self {
+    pub fn new(pos: (u8, u8), tetris: TetrisBlock) -> Self {
         Sigil { pos, class: tetris }
     }
 
     fn shape(&self) -> &[SigilCell] {
         match self.class {
-            Tetris::O => &SQUARE,
-            Tetris::I(Line::Horizontal) => &H_LINE,
-            Tetris::I(Line::Vertical) => &V_LINE,
-            Tetris::S(Line::Horizontal) => &SH,
-            Tetris::S(Line::Vertical) => &SV,
-            Tetris::Z(Line::Horizontal) => &ZH,
-            Tetris::Z(Line::Vertical) => &ZV,
-            Tetris::T(Direction::Up) => &T_UP,
-            Tetris::T(Direction::Right) => &T_RIGHT,
-            Tetris::T(Direction::Down) => &T_DOWN,
-            Tetris::T(Direction::Left) => &T_LEFT,
-            Tetris::L(Direction::Up) => &L_UP,
-            Tetris::L(Direction::Right) => &L_RIGHT,
-            Tetris::L(Direction::Down) => &L_DOWN,
-            Tetris::L(Direction::Left) => &L_LEFT,
-            Tetris::J(Direction::Up) => &J_UP,
-            Tetris::J(Direction::Right) => &J_RIGHT,
-            Tetris::J(Direction::Down) => &J_DOWN,
-            Tetris::J(Direction::Left) => &J_LEFT,
+            TetrisBlock::O => &SQUARE,
+            TetrisBlock::I(Line::Horizontal) => &H_LINE,
+            TetrisBlock::I(Line::Vertical) => &V_LINE,
+            TetrisBlock::S(Line::Horizontal) => &SH,
+            TetrisBlock::S(Line::Vertical) => &SV,
+            TetrisBlock::Z(Line::Horizontal) => &ZH,
+            TetrisBlock::Z(Line::Vertical) => &ZV,
+            TetrisBlock::T(Direction::Up) => &T_UP,
+            TetrisBlock::T(Direction::Right) => &T_RIGHT,
+            TetrisBlock::T(Direction::Down) => &T_DOWN,
+            TetrisBlock::T(Direction::Left) => &T_LEFT,
+            TetrisBlock::L(Direction::Up) => &L_UP,
+            TetrisBlock::L(Direction::Right) => &L_RIGHT,
+            TetrisBlock::L(Direction::Down) => &L_DOWN,
+            TetrisBlock::L(Direction::Left) => &L_LEFT,
+            TetrisBlock::J(Direction::Up) => &J_UP,
+            TetrisBlock::J(Direction::Right) => &J_RIGHT,
+            TetrisBlock::J(Direction::Down) => &J_DOWN,
+            TetrisBlock::J(Direction::Left) => &J_LEFT,
         }
     }
 
@@ -168,13 +170,13 @@ impl Sigil {
 
     pub fn n_states(&self) -> i32 {
         match self.class {
-            Tetris::O => 1,
-            Tetris::I(_) => 2,
-            Tetris::S(_) => 2,
-            Tetris::Z(_) => 2,
-            Tetris::T(_) => 4,
-            Tetris::L(_) => 4,
-            Tetris::J(_) => 4,
+            TetrisBlock::O => 1,
+            TetrisBlock::I(_) => 2,
+            TetrisBlock::S(_) => 2,
+            TetrisBlock::Z(_) => 2,
+            TetrisBlock::T(_) => 4,
+            TetrisBlock::L(_) => 4,
+            TetrisBlock::J(_) => 4,
         }
     }
 

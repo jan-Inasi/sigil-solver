@@ -3,13 +3,13 @@ use argparse::{ArgumentParser, Store};
 pub struct Config {
     pub width: u8,
     pub height: u8,
-    pub o_count: usize,
-    pub i_count: usize,
-    pub s_count: usize,
-    pub z_count: usize,
-    pub l_count: usize,
-    pub j_count: usize,
-    pub t_count: usize,
+    pub o_count: u8,
+    pub i_count: u8,
+    pub s_count: u8,
+    pub z_count: u8,
+    pub l_count: u8,
+    pub j_count: u8,
+    pub t_count: u8,
 }
 
 pub fn get_parsed_arguments_or_exit() -> Config {
